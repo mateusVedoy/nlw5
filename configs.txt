@@ -1,0 +1,236 @@
+aula 01 - comandos
+==================
+mkdir nlw5 -> criar diretorio
+
+cd nlw5 -> entrar no diretorio
+
+code . -> abrir o vscode neste diretorio
+
+npm init -y -> baixar biblioteca json
+
+npm install yarn -> baixa gerencia de pacotes yarn
+
+npm install express --save -> baixar express
+
+npm i --save-dev @types/express -d -> importando tipagens do express para usar no typescript apenas para desevolvimento
+
+mkdir src -> cria diretorio de origem
+
+cd src
+
+touch server.ts -> cria arquivo de servidor typescript
+
+OBS: se ao baixar uma biblioteca, esta ficar com 3 pontinhos antes de seu nome, por exemplo: ...express
+significa que ela tem dependencias de tipagem para ser  baixadas
+
+npm install typescript -y -D  -> instala o pacote typescript
+
+OBS: se não baixar o pacote do typescript, o node não reconhecerá a sentença import do inicio do arquivo server.ts
+
+yarn tsc --init -> iniciar o arquivo json de config do ts
+
+abrir o arquivo tsconfig.json
+procurar a isntrução 'strict' e alterar de true para false
+
+yarn add ts-node-dev -D -> pacote responsável por fazer o processo de tradução de instruções para que o node compreenda
+
+abrir o arquivo package.json
+adicionar o script "dev":"ts-node-dev src/server.ts" -> rodará o script para traduzir o arquivo server.ts
+
+abrir insomnia e criar um ambiente para trabalhar
+
+aula 02 - comandos
+===================
+
+Como trabalhar com banco de dados no node?
+
+1. escolhendo o banco de dados -> postgres
+
+2. escolhendo entre drivers nativos, query builders e ORM
+
+2.1. instalar um driver nativo? (contras:se houver alteração no db, precisará rever os comandos e o driver instalado)
+
+2.2.  buscar uma query builder node.js? ex.: knex.js (biblioteca) -> http://knexjs.org/
+
+2.3. Trabalhar com ORM? ex.: typeORM -> https://typeorm.io/#/
+    o QUE SÃO ORM? framework de relacionamento entre objetos do projeto e entidades do banco de dados
+
+3. instalando typeORM
+
+    . instala o typeorm
+    npm install typeorm --save
+
+    . instala biblioteca auxiliar
+    npm install reflect-metadata --save
+
+    . instala o driver do DB desejado (trabalharemos com sqlite) -- aprender depois com postgres
+    npm install sqlite3 --save
+
+    . criando arquivo com configs do orm no projeto (na raiz do projeto) ->  ormconfig.json
+
+        {
+            "type":"sqlite",                                                 //define o tipo de banco usado
+            "database":"./src/database/database.sqlite",                     //define o local onde deverá ser criado o arquivo db
+            "migrations":["./src/database/migrations/**.ts"] ,               //define o caminho onde buscar todas as migrations disponiveis no projeto
+            "entities":"./src/entities/**.ts",                               //define o caminho onde busar todas as entidades
+            "cli":{
+                "migrationsDir":"./src/database/migrations"                  //define onde iremos criar as migrations  
+            }
+        }       
+
+4. criar uma pasta dentro de src para armazenar configs de conexao (precisa estar dentro da pasta src)
+
+5. criar um aquivo chamado index.ts dentro da pata database
+
+6. importa o index.ts do database para server.ts da pasta src
+
+7. criar pasta migrations dentro de database
+
+8. Adicionar ao script ao package.json 
+    "typeorm":"ts-node-dev node_modules/typeorm/cli.js"
+
+9. adicionar ao ormconfig.json 
+    "cli":{
+        "migrationsDir":"./src/database/migrations"
+    }
+
+10. criando migrations
+yarn typeorm migration:create -n nomeMigration
+
+    10.1. se der erro ts-node-dev not recognized
+        yarn add ts-node-dev
+
+    10.2. caso queira executar uma migration 
+        yarn typeorm migration:run
+
+    10.3. como reverter uma migration
+        yarn typeorm migration:revert
+
+11. dentro da migration createSettings criar o comando para criar a tabela settings e o comando para deletar
+
+12. visualizar as tabelas sqlite
+
+    12.1. baixar a extensão sqlite
+    12.2. no vscode dar o comando ctrl + shift + p para abrir a caixa de navegacao das extensoes
+    12.3. buscar por sqlite open database -> buscar aque estiver em dentro do projeto atual
+
+13. adicionar biblioteca para gerar uuid
+    yarn add uuid 
+    yarn add @types/uuid -D 
+
+14. criando entidade que representara a entidade dentro do projeto
+
+    14.1. criar pasta entities dentro de src 
+    14.2. habilitar(descomentando) dentro do arquivo tsconfig.json as linhas: "experimentalDecorators": true, e  "emitDecoratorMetadata": true,  caso esteja usando typescript
+
+15. mapear as entidades dentro do arquivo ormconfig.json
+
+16. criando repositório para manipular dados entre entidades x objetos do typeorm
+
+    16.1. criar uma pasta chamada repositories dentro de src
+    16.2. criar um arquivo que servirá para manipular a relação entre a tabela/entidade settings e o objeto Setting.ts 
+
+17. criar arquivo de routes.ts dentro de src 
+
+18. importa routes.ts para server.ts
+
+19. criar um requisição post pelo insomia
+
+20.  criar uma pasta controller na raiz de src
+
+21. criar arquivo controller dentro da pasta controller
+
+aula 02 - comandos
+===================
+1. Redefinir a regra de negócio / fluxo da entidade setting
+
+    1.1. criar pasta services dentro da raiz src
+
+    1.2. criar arquivo SettingsService.ts dentro de services
+
+2. criar a migration da tabela users
+
+==================================
+DICAS*
+- a cada migration, precisa rodar o comando para gerar a tabela
+==================================
+
+DÚVIDA
+- como rodar migrations quado já há tabela criada para certa migration?
+    ex.: migration1 já está criada, mas a migation 2 não. Ao rodar o comando para criar a tabela, será gerado um erro por já haver a migration 1 como tabela
+
+3. criar a entidade que se relacionará com a tabela users
+
+ORDEM DE CRIAÇÃO
+    0. rota (por onde entra a info)
+    1. migration (o que estrutura a tabela que armazenará as infos)
+    2. entity (o que definirá a estrutura e o tipo das infos a serem recebidas)
+    3. repository (o que relaciona a tabela com a entidade)
+    4. service (responsavel por armazenar as infos e por validar)
+    5. controller (responsavel por pegar as infos da rota, tratar e passar para service)
+
+4. criar repository de users
+
+5. criar service de users
+
+6. criar controler de users
+
+7. criar rota para cadastrar users
+
+8. criar rota de post de users no insomia
+
+9. criar arquivos relativos à tabela messages
+    9.1. migration
+    9.2. entity
+    9.3. repository
+    9.4. service
+    9.5. controller
+    9.6. criar rota
+
+* DICAS
+- mensagem sem admin_id significa que foi mandada pelo cliente
+- mensagem com admin_id foi enviada pelo atendente
+
+10. trazer todas as mensagens do usuário no MessagesService.ts
+
+aula 04 - comandos
+===================
+1. o que é websocket? 
+. protocolo persistente de troca de informações entre seridor e cliente
+. servidor consegue enviar dados ao clientesem este ter requisitado
+
+2. instalar websocket (socket.io) -> npm install socket.io --save
+
+3. instalar as tipagens do socket.io -> yarn add @types/socket.io -D
+
+4. editar o arquivo server.ts
+    4.1. importar duas classes
+        4.1.1. createServer do http
+        4.1.2. Server e Socket do socket.io
+    4.2.criar servidor http com as infos do express
+    4.3. criar servidor do socket.io
+    4.4. alterar protocolo que cria o servidor - passa a ser http
+
+5. adicionar pasta public com parte front
+
+6. adicionar modulo ejs -> yarn add ejs
+
+7. adicionar modulo socket.io-client -> yarn add socket.io-client - precisará pois tem clientside
+
+8. criar pasta websocket na raiz de src
+
+9. criar client.ts em websocket para armazenar configs do socket do cliente
+
+10. criar admin.ts em websocket para armazenar configs do socket do atendente 
+
+11. criar arquivo http.ts na raiz src
+
+12. mover algumas configs de server.ts para http.ts
+
+13. abrir arquivo chat.js em public para editar
+
+14. criar arquivos relativos à tabela connections
+    14.1. migration
+    14.2. entity
+    14.3. repository
+    14.4. service
