@@ -15,6 +15,14 @@ class UsersService {
         this.usersRepository = getCustomRepository(UsersRepository);
     }
 
+    //lista todos usuarios cadastrados
+    async allUsers(){
+
+        const allUsers = await this.usersRepository.find();
+
+        return allUsers;
+    }
+
     //busca user pelo email recuperado
     async findByEmail(email: string){
 

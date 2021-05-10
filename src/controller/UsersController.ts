@@ -23,7 +23,16 @@ class UsersController {
                 message: err.message
             });
         }
+    }
 
+    //traz todos usuarios
+    async allUsers(request: Request, response: Response) :Promise<Response>{
+
+        const usersService = new UsersService();
+
+        const allUsers = await usersService.allUsers();
+
+        return response.json(allUsers);
     }
 }
 

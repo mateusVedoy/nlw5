@@ -20,17 +20,32 @@ const usersController = new UsersController();
 
 const messagesController = new MessagesController();
 
+
+//SETTINGS
+
 //rota de Settings para inserir dados
-routes.post("/settings", settingsController.create);                //código da rota encontra-se dentro da classe SettingsController
+routes.post("/settings", settingsController.create);                           //código da rota encontra-se dentro da classe SettingsController
 
-routes.get("/settings/:username", settingsController.findByUsername);     //lista congis do user
+routes.get("/settings/:username", settingsController.findByUsername);       //lista congis do user
 
-routes.put("/settings/:username", settingsController.settingsUpdate);     //rota para atualizar settings do user
+routes.put("/settings/:username", settingsController.settingsUpdate);       //rota para atualizar settings do user
 
-routes.post("/users", usersController.create);  //insere user
 
-routes.post("/messages", messagesController.create);    //insere mensagem
+//USERS
 
-routes.get("/messages/:id", messagesController.showByUser); //lista mensagem
+routes.post("/users", usersController.create);                              //insere user
+
+routes.get("/users", usersController.allUsers);                             //lista todos usuarios
+
+
+//MESSAGES
+
+routes.post("/messages", messagesController.create);                        //insere mensagem
+
+routes.get("/messages/:id", messagesController.showByUser);                 //lista mensagem
+
+//CONNECTION
+
+
 
 export { routes };
